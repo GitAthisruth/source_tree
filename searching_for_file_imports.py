@@ -8,6 +8,8 @@ import json
 import re
 from glob import glob
 
+import main
+
 folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree" 
 
 
@@ -62,18 +64,19 @@ def get_all_file_infos(folder_path, file_to_check):
         
         for ext in extensions: 
             all_files.extend(os.path.splitext(os.path.basename(file))[0] for file in glob(os.path.join(folder_path, '**', f'*{ext}'), recursive=True))
-        # print(f"all_files {all_files}")
+        print(f"all_files {all_files}")
         for (dirpath, dirnames, filenames) in os.walk(folder_path):
             for file in filenames:
-                print(f"file {file}")
+                # print(f"file {file}")
                 if file.endswith(extensions):
                     file_path = os.path.join(dirpath, file)
                     file_contents = content_reader(file_path)
                     
                     if file_contents:
                         file_imports = extract_imports(file_contents)
+                        print(f"file: {file} file_imports {file_imports}")
                         matching_files = [i for i in file_imports if i in all_files and i != file_to_check]
-                        print(f"matching files: {matching_files}")
+                        # print(f"matching files: {matching_files}")
                         
                         if matching_files:
                             if matching_files[0] not in file_inform["imported_files"]:
