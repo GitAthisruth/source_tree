@@ -1,5 +1,7 @@
 import math_operation
 
+import main
+
 def add(a, b):
     return a + b
 
