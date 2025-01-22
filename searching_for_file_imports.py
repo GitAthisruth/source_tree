@@ -8,7 +8,6 @@ import json
 import re
 from glob import glob
 
-import main
 
 folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree" 
 
@@ -56,7 +55,6 @@ def get_all_file_infos(folder_path, file_to_check):
     try:
         file_inform = {"file_name": None, "imported_files": []}
         all_files = []
-
         extensions = ('.py','.js',)
 
         if file_to_check.endswith(extensions):
@@ -67,23 +65,18 @@ def get_all_file_infos(folder_path, file_to_check):
         print(f"all_files {all_files}")
         for (dirpath, dirnames, filenames) in os.walk(folder_path):
             for file in filenames:
-                # print(f"file {file}")
                 if file.endswith(extensions):
+                    print(f"file {file}")
                     file_path = os.path.join(dirpath, file)
                     file_contents = content_reader(file_path)
+                    # print(f"file:{file} file_contents: {file_contents}")
                     
                     if file_contents:
                         file_imports = extract_imports(file_contents)
-                        print(f"file: {file} file_imports {file_imports}")
-                        matching_files = [i for i in file_imports if i in all_files and i != file_to_check]
-                        # print(f"matching files: {matching_files}")
-                        
-                        if matching_files:
-                            if matching_files[0] not in file_inform["imported_files"]:
-                                file_inform["file_name"] = file_to_check
-                                file_inform["imported_files"].append(matching_files[0])
+                        if file_to_check in file_imports:
+                           file_inform["file_name"] = file_to_check 
+                           file_inform["imported_files"].append(file)
         
-        # Save the results to a text file
         with open('file_info_t.txt', 'w') as file:
             file.write(str(file_inform))
         
