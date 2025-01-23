@@ -72,12 +72,15 @@ def get_all_file_infos(folder_path, file_to_check):
                     file_path = os.path.join(dirpath, file)
                     file_contents = content_reader(file_path)
                     # print(f"file:{file} file_contents: {file_contents}")
-                    
-                    if file_contents:
-                        file_imports = extract_imports(file_contents)
-                        if file_to_check in file_imports:
-                           file_inform["file_name"] = file_to_check 
-                           file_inform["imported_files"].append(file)
+                    file_imports = extract_imports(file_contents)
+                    if file_to_check in file_imports:
+                        file_inform["file_name"] = file_to_check 
+                        file_inform["imported_files"].append(file)
+                    else:  
+                        file_inform["file_name"] = file_to_check 
+                        file_inform["imported_files"] = []
+                  
+                        
         
         with open('file_info_t.txt', 'w') as file:
             file.write(str(file_inform))

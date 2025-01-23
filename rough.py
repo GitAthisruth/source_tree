@@ -222,3 +222,51 @@ con = {"file_name":"main","dep":["os"],
             "file_name":"main_sub","dep":['math_operation'],
             "file_name":"math_op","dep":['math_operation']}
 
+
+'''output'''
+
+dependency = {"file_name":"main","dep":["math","search","math_op","main_sub","file_1","file_2"],
+            "file_name":"maths","dep":["search","file1","file2","main_sub","math_op"],
+            "file_name":"search","dep":[],
+            "file_name":"file1","dep":["file2"],
+            "file_name":"file2","dep":[],
+            "file_name":"main_sub","dep":[],
+            "file_name":"math_op","dep":[]}
+
+'''input'''
+
+new = {"file_name":[],"dep":[]}
+
+content_val = [{"file_name":"main","imp":["os"]},
+       {"file_name":"math","imp":['main','pandas','sub_folder']},
+       {"file_name":"search","imp":['by', 'os', 'json', 're', 'glob', 'math', 're']},
+       {"file_name":"file1","imp":['math', 'main']},
+       {"file_name":"file2","imp":['file1']},
+       {"file_name":"main_sub","imp":['math']},
+       {"file_name":"math_op","imp":['math']}]
+
+
+
+def dep_search(file_to_check,count):
+    imp_list = []
+    len_con = len(content_val)
+    print(f"len: {len_con}")
+    for i in content_val:
+        count+=1
+        print(i["file_name"],i["imp"])
+        print()
+        if file_to_check in i["imp"] and i["file_name"] not in imp_list:
+            imp_list.append(i["file_name"])
+    
+
+    if imp_list and file_to_check not in imp_list:
+        for i in imp_list:
+            print(f"i in imp2 {i}")
+            imp_list.extend(dep_search(i,count))
+
+        return imp_list + result
+        
+    print(f"count : {count}")
+    return set(imp_list)
+
+print(dep_search("main",count=0))
