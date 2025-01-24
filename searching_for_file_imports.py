@@ -1,3 +1,8 @@
+# task
+"""Input:give a filename
+Output: find the filenames that is import by the Input filename"""
+
+
 import os 
 import json
 import re
@@ -14,10 +19,8 @@ folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree"
 def content_reader(file_path):
     try:
         with open(file_path, "r") as file:
-            content = file.read()
-            file.seek(0)
             content_y = file.readlines()
-            content_y = [line.strip() for line in content_y if line.strip()]
+            content_y = [line.strip() for line in content_y if line.strip() and line.startswith(("import", "from"))]
             # print(f"content type {type(content_y)} content_y is : {content_y}")
         return content_y
     except FileNotFoundError:
@@ -42,9 +45,9 @@ def extract_imports(content):
             print(f"matches {matches}")
             for match in matches:
                 module_name = match[0] or match[1]
-                print(f"module name {module_name}")
+                # print(f"module name {module_name}")
                 imports.append(module_name)
-        print(f"imports in extract_imports: {list(set(imports)) }")
+        # print(f"imports in extract_imports: {list(set(imports)) }")
         return list(set(imports))    
     except Exception as e:
         print(f"An error occurred while extracting imports: {e}")
@@ -94,14 +97,14 @@ def get_all_file_infos(folder_path, file_to_check):
         
         for ext in extensions: 
             all_files.extend(os.path.splitext(os.path.basename(file))[0] for file in glob(os.path.join(folder_path, '**', f'*{ext}'), recursive=True))
-        print(f"all_files {all_files}")
+        # print(f"all_files {all_files}")
         for (dirpath,dirnames, filenames) in os.walk(folder_path):
             for file in filenames:
                 if file.endswith(extensions):
                     # print(f"file {file}")
                     file_path = os.path.join(dirpath, file)
                     file_contents = content_reader(file_path)
-                    print(f"file:{file} file_contents: {file_contents}") # import as list of values
+                    # print(f"file:{file} file_contents: {file_contents}") # import as list of values
                     
                     if file_contents:
                         file_imports = extract_imports(file_contents)
