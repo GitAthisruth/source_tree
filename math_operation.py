@@ -2,7 +2,7 @@ import main
 
 import pandas
 
-from sub_folder import main_subfolder
+
 
 def add(a, b):
     return a + b

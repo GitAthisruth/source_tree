@@ -52,6 +52,28 @@ def extract_imports(content):
 
 
 
+def dep_search(file_to_check,content_val):
+    imp_list = []
+    len_con = len(content_val)
+    # print(f"len: {len_con}")
+    for i in content_val:
+        count+=1
+        # print(i["file_name"],i["imp"])
+        print()
+        if file_to_check in i["imp"] and i["file_name"] not in imp_list:
+            imp_list.append(i["file_name"])
+    
+
+    if imp_list and file_to_check not in imp_list:
+        for i in imp_list:
+            # print(f"i in imp2 {i}")
+            imp_list.extend(dep_search(i,count))
+
+        return set(imp_list)
+        
+    print(f"count : {count}")
+    return set(imp_list)
+
 
 def get_all_file_infos(folder_path, file_to_check):
     try:
@@ -71,7 +93,7 @@ def get_all_file_infos(folder_path, file_to_check):
                     print(f"file {file}")
                     file_path = os.path.join(dirpath, file)
                     file_contents = content_reader(file_path)
-                    # print(f"file:{file} file_contents: {file_contents}")
+                    print(f"file:{file} file_contents: {file_contents}")
                     file_imports = extract_imports(file_contents)
                     if file_to_check in file_imports:
                         file_inform["file_name"] = file_to_check 
