@@ -21,7 +21,8 @@ def content_reader(file_path):
         with open(file_path, "r") as file:
             content_y = file.readlines()
             content_y = [line.strip() for line in content_y if line.strip() and line.startswith(("import", "from"))]
-            # print(f"content type {type(content_y)} content_y is : {content_y}")
+            # content_y = [line.split(".")[-1] for line in content_y ]
+            print(f"content type {type(content_y)} content_y is : {content_y}")
         return content_y
     except FileNotFoundError:
         print(f"Error: The file at {file_path} was not found.")
