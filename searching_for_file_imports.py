@@ -40,6 +40,7 @@ import re
 def extract_imports(content):
     try:
         imports = []
+        print(f"contents extract: {content}")
         for val in content:
             regex = r"(?:import\s+([\w\.]+)|from\s+([\w\.]+)\s+import)"
             matches = re.findall(regex,val)
@@ -47,8 +48,14 @@ def extract_imports(content):
             for match in matches:
                 module_name = match[0] or match[1]
                 # print(f"module name {module_name}")
-                imports.append(module_name)
-        # print(f"imports in extract_imports: {list(set(imports)) }")
+                if "." in module_name:
+                    print(f"name with . :{module_name}")
+                    module_name = module_name.split(".")[-1]
+                    print(f"sliced module name  :{module_name}")
+                    imports.append(module_name)
+                else:
+                    imports.append(module_name)
+        print(f"imports in extract_imports: {list(set(imports)) }")
         return list(set(imports))    
     except Exception as e:
         print(f"An error occurred while extracting imports: {e}")
