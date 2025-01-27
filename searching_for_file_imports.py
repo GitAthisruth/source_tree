@@ -9,6 +9,7 @@ import re
 from glob import glob
 
 import pandas as pd
+import main
 
 
 
@@ -21,7 +22,6 @@ def content_reader(file_path):
         with open(file_path, "r") as file:
             content_y = file.readlines()
             content_y = [line.strip() for line in content_y if line.strip() and line.startswith(("import", "from"))]
-            # content_y = [line.split(".")[-1] for line in content_y ]
             print(f"content type {type(content_y)} content_y is : {content_y}")
         return content_y
     except FileNotFoundError:
