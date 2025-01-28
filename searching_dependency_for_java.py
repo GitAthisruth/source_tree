@@ -33,6 +33,16 @@ def extract_imports(content):
             regex = r"import\s+([\w]+(?:\.[\w]+)*)(?:\.\*|;)?"
             matches = re.findall(regex,val)
             print(f"matches from content:{matches}")
+            for match in matches:
+                print(f"match: {match}")
+                if "." in match:
+                    print(f"match: {match}")
+                    module_name = match.split(".")[-1]
+                    imports.append(module_name)
+                else:
+                    print(f"else: match {match}")
+                    imports.append(match)
+        return list(set(imports))    
     except Exception as e:
         print(f"An error occured while extracting imports: {e}")
         return []
