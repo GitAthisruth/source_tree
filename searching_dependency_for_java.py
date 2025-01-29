@@ -79,11 +79,11 @@ def dep_search(file_to_check, files_inform, folder_inform,seen=None):
     seen_rec = set()
     parent_folder = None
     for folder in folder_inform:
-        print(f"folder name : {folder_inform} ")
+        # print(f"folder name : {folder_inform} ")
         if folder['folder_files'] == file_to_check:
             parent_folder = folder['folder_name']
             break 
-    print(f"parent_folder: {parent_folder}")
+    # print(f"parent_folder: {parent_folder}")
     for file_info in files_inform:
         if file_to_check in file_info['imp'] and file_info['file_name'] not in seen:
             dependencies.add(file_info['file_name'])  # Direct dependency
@@ -92,7 +92,7 @@ def dep_search(file_to_check, files_inform, folder_inform,seen=None):
         # print(f"imp_files: {imp_file}")
         if imp_file not in seen_rec:
             seen_rec.add(imp_file)
-            print(f"seen_rec: {seen_rec}")
+            # print(f"seen_rec: {seen_rec}")
             dependencies.update(dep_search(imp_file,files_inform, seen))
 
     if parent_folder:
