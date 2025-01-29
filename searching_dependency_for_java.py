@@ -11,7 +11,7 @@ def content_reader(file_path):
         with open(file_path, "r") as file:
             content_y = file.readlines()
             content_y = [line.strip() for line in content_y  if line.startswith(("import","package"))]
-            print(f"content is : {content_y}")
+            # print(f"content is : {content_y}")
         return content_y
     except FileNotFoundError:
         print(f"Error: The file at {file_path} was not found.")
@@ -20,22 +20,22 @@ def content_reader(file_path):
 def extract_imports(content):
     try:
         imports = []
-        print(f"extracted contents: {content}")
+        # print(f"extracted contents: {content}")
         for val in content:
-            print(f"val in contents are: {val}")
+            # print(f"val in contents are: {val}")
             regex = r"(?:import\s+([\w]+(?:\.[\w]+)*)(?:\.\*|;)?)|((package)\s+([\w]+(?:\.[\w]+)?)\s*;)"
             matches = re.findall(regex,val)
-            print(f"matches from content:{matches}")
+            # print(f"matches from content:{matches}")
             for match in matches:
                 # print(f"match: {match}")
                 module_name = match[0] or match[1]
-                print(f"match: {match}")
+                # print(f"match: {match}")
                 if "." in module_name:
                     module_name_ = module_name.split(".")[-1]
-                    print(f"module name {module_name_}")
+                    # print(f"module name {module_name_}")
                     imports.append(module_name_)
                 else:
-                    print(f"else: match {module_name}")
+                    # print(f"else: match {module_name}")
                     imports.append(module_name)
         return list(set(imports))    
     except Exception as e:
