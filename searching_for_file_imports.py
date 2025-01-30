@@ -10,7 +10,7 @@ from glob import glob
 
 import pandas as pd
 
-
+import main
 
 
 # folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree" 
