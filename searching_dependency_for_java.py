@@ -1,9 +1,36 @@
+import networkx as nx
+import matplotlib.pyplot as plt
 import os 
 import json
 import re
 from glob import glob
 
 import pandas as pd
+
+
+def build_dependency_graph(graph_inform):
+    Graph = nx.DiGraph()
+
+    for file_info in graph_inform:
+        file_name = file_info['file_name']
+        Graph.add_node(file_name)
+        
+        for imp in file_info['imp']:
+            Graph.add_edge(file_name, imp)
+
+    return Graph
+
+
+def draw_dependency_graph(Graph,file_to_check):
+    plt.figure(figsize=(10, 8))
+    pos = nx.spring_layout(Graph, seed=42)
+    nx.draw(Graph, pos, with_labels=True, node_color="lightblue", edge_color="gray", node_size=1000, font_size=10)
+    plt.savefig(f"{file_to_check}.png")
+    plt.show()
+
+
+
+
 
 
 def content_reader(file_path):
@@ -90,13 +117,16 @@ def dep_check_for_java(folder_path,file_to_check):
                     else:    
                         file_inform.append({"file_name":file.split(".")[0],"imp":file_imports})
     imp_list = dep_search(file_to_check,file_inform,folder_inform)
+    graph_data = [{"file_name":file_to_check,"imp":imp_list}]
+    build_graph =  build_dependency_graph(graph_data)
+    graph = draw_dependency_graph(build_graph,file_to_check)
     with open('file_info_t.txt', 'w') as file:
         file.write(str(imp_list))
         
     with open("file_info_j.json", "w") as out_file:
         json.dump(str(imp_list), out_file, indent=6)
     
-    return imp_list
+    return imp_list,graph
 
 
         
