@@ -116,7 +116,6 @@ def get_all_file_infos(folder_path, file_to_check):
         return {}
 
 if __name__ == "__main__":
-    # folder_path = input("Enter the folder path: ")
     folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree" 
     file_to_check = input("Enter the file name(.js/.py) without the extension to check: ")
     
