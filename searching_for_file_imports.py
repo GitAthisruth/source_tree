@@ -3,6 +3,8 @@
 Output: find the filenames that is import by the Input filename"""
 
 
+#code for ."js" and ".py" files only
+
 import os 
 import json
 import re
@@ -14,9 +16,6 @@ import main
 
 
 # folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree" 
-
-# folder_path_ =  "C:\\Users\\LENOVO\\Desktop\\javaProdemo"
-
 
 def content_reader(file_path):
     try:
@@ -35,13 +34,10 @@ import re
 def extract_imports(content):
     try:
         imports = []
-        # print(f"extracted contents: {content}")
         for val in content:
             if ".js" not in val:
-                # print(f"val in contents are: {val}")
                 regex = r"(?:import\s+([\w\.]+)|from\s+([\w\.]+)\s+import)"
                 matches = re.findall(regex,val)
-                # print(f"matches from content:{matches}")
                 for match in matches:
                     module_name = match[0] or match[1]
                     if "." in module_name:
@@ -52,9 +48,7 @@ def extract_imports(content):
             else:
                 regex = r"(?:import\s+[^'\"]*['\"](?:.*/)?([\w]+)\.js['\"]|from\s+['\"](?:.*/)?([\w]+)\.js['\"])"
                 matches = re.findall(regex,val)
-                # print(f"matches from content:{matches}")
                 for match in matches:
-                    # print(f"match is {match}")
                     module_name = match[0] or match[1]
                     imports.append(module_name)
         return list(set(imports))    
@@ -68,29 +62,14 @@ def dep_search(file_to_check, files_inform, folder_inform,seen=None):
     dependencies = set()
     seen = set()
     seen_rec = set()
-    parent_folder = None
-    for folder in folder_inform:
-        # print(f"folder name : {folder_inform} ")
-        if folder['folder_files'] == file_to_check:
-            parent_folder = folder['folder_name']
-            break 
-    # print(f"parent_folder: {parent_folder}")
     for file_info in files_inform:
         if file_to_check in file_info['imp'] and file_info['file_name'] not in seen:
             dependencies.add(file_info['file_name'])  # Direct dependency
     
     for imp_file in list(dependencies):
-        # print(f"imp_files: {imp_file}")
         if imp_file not in seen_rec:
             seen_rec.add(imp_file)
-            # print(f"seen_rec: {seen_rec}")
             dependencies.update(dep_search(imp_file,files_inform, seen))
-
-    if parent_folder:
-        for file_info in files_inform:
-            if parent_folder in file_info['imp']:
-                dependencies.add(file_info['file_name'])  
-
 
     return list(dependencies)
 
@@ -111,28 +90,16 @@ def get_all_file_infos(folder_path, file_to_check):
             file_to_check = os.path.splitext(file_to_check)[0]#convert file without extension
         
         for ext in extensions: 
-            # print(f"ext is: {ext}")
             all_files.extend(os.path.splitext(os.path.basename(file))[0] for file in glob(os.path.join(folder_path, '**', f'*{ext}'), recursive=True))
-        # print(f"all_files {all_files}")
         for (dirpath,dirnames, filenames) in os.walk(folder_path):
             for file in filenames:
                 if file.endswith(extensions):
-                    # print(f"file {file}")
                     file_path = os.path.join(dirpath, file)
                     file_contents = content_reader(file_path)
-                    # print(f"file:{file} file_contents: {file_contents}") # import as list of values
                     
                     if file_contents:
                         file_imports = extract_imports(file_contents)
-                        # print(f"file {file} and file_imports {file_imports}")
-                        if "package" in file_imports[0]:
-                            # print(f"package saved      {file} and file_imports {file_imports}")
-                            package_name = file_imports[0].replace("package ", "").replace(";", "").strip()
-                            # print(f"package name is  {package_name} {type(package_name)}")
-                            folder_inform.append({"folder_name":package_name,"folder_files":file.split(".")[0]})
-                        else:    
-                            file_inform.append({"file_name":file.split(".")[0],"imp":file_imports})
-        # print(f"file_inform {file_inform}")
+                        file_inform.append({"file_name":file.split(".")[0],"imp":file_imports})
         imp_list = dep_search(file_to_check,file_inform,folder_inform)
 
         
@@ -151,7 +118,7 @@ def get_all_file_infos(folder_path, file_to_check):
 if __name__ == "__main__":
     # folder_path = input("Enter the folder path: ")
     folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree" 
-    file_to_check = input("Enter the file name to check: ")
+    file_to_check = input("Enter the file name(.js/.py) without the extension to check: ")
     
     file_info = get_all_file_infos(folder_path, file_to_check)
     print(file_info)
