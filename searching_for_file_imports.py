@@ -5,6 +5,8 @@ Output: find the filenames that is import by the Input filename"""
 
 #code for ."js" and ".py" files only
 
+import networkx as nx
+import matplotlib.pyplot as plt
 import os 
 import json
 import re
@@ -12,17 +14,34 @@ from glob import glob
 
 import pandas as pd
 
-import main
+def build_dependency_graph(graph_inform):
+    Graph = nx.DiGraph()
+
+    for file_info in graph_inform:
+        file_name = file_info['file_name']
+        Graph.add_node(file_name)
+        
+        for imp in file_info['imp']:
+            Graph.add_edge(file_name, imp)
+
+    return Graph
 
 
-# folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree" 
+def draw_dependency_graph(Graph,file_to_check):
+    plt.figure(figsize=(10, 8))
+    pos = nx.spring_layout(Graph, seed=42)
+    nx.draw(Graph, pos, with_labels=True, node_color="lightblue", edge_color="gray", node_size=1000, font_size=10)
+    plt.savefig(f"{file_to_check}.png")
+    plt.show()
+
+
+
 
 def content_reader(file_path):
     try:
         with open(file_path, "r") as file:
             content_y = file.readlines()
             content_y = [line.strip() for line in content_y  if line.startswith(("import", "from"))]
-            # print(f"content is : {content_y}")
         return content_y
     except FileNotFoundError:
         print(f"Error: The file at {file_path} was not found.")
@@ -63,9 +82,10 @@ def dep_search(file_to_check, files_inform, folder_inform,seen=None):
     seen = set()
     seen_rec = set()
     for file_info in files_inform:
+        file_to_check = file_to_check.replace(".py","")
         if file_to_check in file_info['imp'] and file_info['file_name'] not in seen:
             dependencies.add(file_info['file_name'])  # Direct dependency
-    
+        
     for imp_file in list(dependencies):
         if imp_file not in seen_rec:
             seen_rec.add(imp_file)
@@ -76,15 +96,13 @@ def dep_search(file_to_check, files_inform, folder_inform,seen=None):
 
 
 
-
-
 def get_all_file_infos(folder_path, file_to_check):
     try:
         file_inform = []
         all_files = []
         imp_list = []
         folder_inform = []
-        extensions = ('.py','.js','.java')
+        extensions = ('.py','.js',)
 
         if file_to_check.endswith(extensions):
             file_to_check = os.path.splitext(file_to_check)[0]#convert file without extension
@@ -101,19 +119,21 @@ def get_all_file_infos(folder_path, file_to_check):
                         file_imports = extract_imports(file_contents)
                         file_inform.append({"file_name":file.split(".")[0],"imp":file_imports})
         imp_list = dep_search(file_to_check,file_inform,folder_inform)
-
-        
+        graph_data = [{"file_name":file_to_check,"imp":imp_list}]
+        build_graph =  build_dependency_graph(graph_data)
+        graph = draw_dependency_graph(build_graph,file_to_check)
         with open('file_info_t.txt', 'w') as file:
             file.write(str(imp_list))
         
         with open("file_info_j.json", "w") as out_file:
             json.dump(str(imp_list), out_file, indent=6)
         
-        return imp_list
+        return imp_list,graph
 
     except Exception as e:
         print(f"An error occurred: {e}")
         return {}
+
 
 if __name__ == "__main__":
     folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree" 
@@ -121,4 +141,3 @@ if __name__ == "__main__":
     
     file_info = get_all_file_infos(folder_path, file_to_check)
     print(file_info)
-
