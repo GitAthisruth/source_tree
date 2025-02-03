@@ -1,1 +1,7 @@
-['file1', 'main_subfolder', 'file2', 'math_operation_subfolder', 'math_operation']
+{
+    "file": "MyClass",
+    "dependencies": [
+        "App",
+        "filej"
+    ]
+}
