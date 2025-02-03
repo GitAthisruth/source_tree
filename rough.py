@@ -1,4 +1,5 @@
 import re
+from . import main
 
 # import .sub_folder.math_operation_subfolder import add
 # val = {"file":[]}

@@ -1,10 +1,11 @@
 {
     "file": "main",
     "dependencies": [
-        "file1",
-        "math_operation_subfolder",
+        "math_operation",
         "main_subfolder",
+        "file1",
+        "rough",
         "file2",
-        "math_operation"
+        "math_operation_subfolder"
     ]
 }
