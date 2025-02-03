@@ -28,11 +28,6 @@ def draw_dependency_graph(Graph,file_to_check):
     plt.savefig(f"{file_to_check}.png")
     plt.show()
 
-
-
-
-
-
 def content_reader(file_path):
     try:
         with open(file_path, "r") as file:
@@ -117,9 +112,11 @@ def dep_check_for_java(folder_path,file_to_check):
                     else:    
                         file_inform.append({"file_name":file.split(".")[0],"imp":file_imports})
     imp_list = dep_search(file_to_check,file_inform,folder_inform)
-    graph_data = [{"file_name":file_to_check,"imp":imp_list}]
-    build_graph =  build_dependency_graph(graph_data)
-    graph = draw_dependency_graph(build_graph,file_to_check)
+    if imp_list:
+        graph_data = [{"file_name":file_to_check,"imp":imp_list}]
+        build_graph =  build_dependency_graph(graph_data)
+        graph = draw_dependency_graph(build_graph,file_to_check)
+
     with open('file_info_t.txt', 'w') as file:
         file.write(str(imp_list))
         

@@ -39,7 +39,7 @@ def draw_dependency_graph(Graph,file_to_check):
 
 def content_reader(file_path):
     try:
-        with open(file_path, "r") as file:
+        with open(file_path, "r",encoding="utf8") as file:
             content_y = file.readlines()
             content_y = [line.strip() for line in content_y  if line.startswith(("import", "from"))]
         return content_y
@@ -77,7 +77,7 @@ def extract_imports(content):
 
 
 
-def dep_search(file_to_check, files_inform, folder_inform,seen=None):
+def dep_search(file_to_check, files_inform,seen=None):
     dependencies = set()
     seen = set()
     seen_rec = set()
@@ -122,13 +122,14 @@ def get_all_file_infos(folder_path, file_to_check):
         graph_data = [{"file_name":file_to_check,"imp":imp_list}]
         build_graph =  build_dependency_graph(graph_data)
         graph = draw_dependency_graph(build_graph,file_to_check)
+        imp_list_json = json.dumps({"file": file_to_check, "dependencies": imp_list}, indent=4)
         with open('file_info_t.txt', 'w') as file:
             file.write(str(imp_list))
         
         with open("file_info_j.json", "w") as out_file:
             json.dump(str(imp_list), out_file, indent=6)
         
-        return imp_list,graph
+        return imp_list_json
 
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -136,6 +137,7 @@ def get_all_file_infos(folder_path, file_to_check):
 
 
 if __name__ == "__main__":
+    # folder_path =  "C:\\Users\\LENOVO\\Desktop\\python_/repo_to_check\\Qwen"  
     folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree" 
     file_to_check = input("Enter the file name(.js/.py) without the extension to check: ")
     
