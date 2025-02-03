@@ -137,7 +137,8 @@ def get_all_file_infos(folder_path, file_to_check):
 
 if __name__ == "__main__":
     # folder_path =  "C:\\Users\\LENOVO\\Desktop\\python_/repo_to_check\\Qwen"  
-    folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree" 
+    # folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree"
+    folder_path = "C:\\Users\LENOVO\\Desktop\\python_repo_to_check\\Advanced-Artificial-Intelligence-Projects-with-Python" 
     file_to_check = input("Enter the file name(.js/.py) without the extension to check: ")
     
     file_info = get_all_file_infos(folder_path, file_to_check)
