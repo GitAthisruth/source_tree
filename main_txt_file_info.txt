@@ -1,0 +1,10 @@
+{
+    "file": "main",
+    "dependencies": [
+        "file1",
+        "math_operation_subfolder",
+        "main_subfolder",
+        "file2",
+        "math_operation"
+    ]
+}

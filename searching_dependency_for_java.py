@@ -117,11 +117,11 @@ def dep_check_for_java(folder_path,file_to_check):
         build_graph =  build_dependency_graph(graph_data)
         graph = draw_dependency_graph(build_graph,file_to_check)
     imp_list_json = json.dumps({"file": file_to_check, "dependencies": imp_list}, indent=4)
-    with open('file_info_t.txt', 'w') as file:
-        file.write(str(imp_list_json))
+    with open(f"{file_to_check}_dependencies.json", "w") as outfile:
+        outfile.write(imp_list_json)
+    with open(f'{file_to_check}_txt_file_info.txt', 'w') as file:
+        file.write(imp_list_json)
         
-    with open("file_info_j.json", "w") as out_file:
-        json.dump(str(imp_list_json), out_file, indent=6)
     
     return imp_list_json
 
