@@ -86,8 +86,11 @@ def extract_imports(content):
 
 
 
-def dep_search(file_to_check, files_inform):
+def dep_search(file_to_check, files_inform,visited=None):
+    if visited is None:
+        visited = set()
     dependencies = set()
+    visited.add(file_to_check)
     for file_info in files_inform:
         file_to_check = file_to_check.replace(".py","")
         if file_to_check in file_info['imp']:
@@ -95,7 +98,8 @@ def dep_search(file_to_check, files_inform):
 
     #Indirect dependency  
     for imp_file in list(dependencies):
-        dependencies.update(dep_search(imp_file,files_inform))
+        if imp_file not in visited:
+            dependencies.update(dep_search(imp_file,files_inform,visited))
 
 
     return list(dependencies)
@@ -143,10 +147,10 @@ def get_all_file_infos(folder_path, file_to_check):
 
 
 if __name__ == "__main__":
-    folder_path = "C:\\Users\\LENOVO\\Desktop\\python_repo_to_check\\importlab"
+    # folder_path = "C:\\Users\\LENOVO\\Desktop\\python_repo_to_check\\importlab"
     # folder_path =  "C:\\Users\\LENOVO\\Desktop\\python_/repo_to_check\\Qwen"
     # folder_path = "C:\\Users\\LENOVO\\Desktop\\flask_demo_project_case_management\\Frontend\\project-management"  
-    # folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree"
+    folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree"
     # folder_path = "C:\\Users\LENOVO\\Desktop\\python_repo_to_check\\Advanced-Artificial-Intelligence-Projects-with-Python" 
     file_to_check = input("Enter the file name(.js/.py) without the extension to check: ")
     # folder_path = os.path.normpath(folder_path)
