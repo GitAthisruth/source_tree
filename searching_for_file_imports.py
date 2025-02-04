@@ -121,10 +121,9 @@ def get_all_file_infos(folder_path, file_to_check):
                 if file.endswith(extensions):
                     file_path = os.path.join(dirpath, file)
                     file_contents = content_reader(file_path)
-                    
+
                     if file_contents:
                         file_imports = extract_imports(file_contents)
-                        print(f"file_name is :{file} file_imports : {file_imports}")
                         file_inform.append({"file_name":file.split(".")[0],"imp":file_imports})
         imp_list = dep_search(file_to_check,file_inform)
         graph_data = [{"file_name":file_to_check,"imp":imp_list}]
