@@ -77,18 +77,17 @@ def extract_imports(content):
 
 
 
-def dep_search(file_to_check, files_inform,seen_rec=None):
+def dep_search(file_to_check, files_inform):
     dependencies = set()
-    seen_rec = set()
     for file_info in files_inform:
         file_to_check = file_to_check.replace(".py","")
-        if file_to_check in file_info['imp'] and file_info['file_name'] not in seen_rec:
+        if file_to_check in file_info['imp']:
             dependencies.add(file_info['file_name'])  # Direct dependency
-        
+
+    #Indirect dependency  
     for imp_file in list(dependencies):
-        if imp_file not in seen_rec:
-            seen_rec.add(imp_file)
-            dependencies.update(dep_search(imp_file,files_inform, seen_rec))
+        dependencies.update(dep_search(imp_file,files_inform))
+
 
     return list(dependencies)
 
@@ -117,7 +116,7 @@ def get_all_file_infos(folder_path, file_to_check):
                     if file_contents:
                         file_imports = extract_imports(file_contents)
                         file_inform.append({"file_name":file.split(".")[0],"imp":file_imports})
-        imp_list = dep_search(file_to_check,file_inform,folder_inform)
+        imp_list = dep_search(file_to_check,file_inform)
         graph_data = [{"file_name":file_to_check,"imp":imp_list}]
         build_graph =  build_dependency_graph(graph_data)
         graph = draw_dependency_graph(build_graph,file_to_check)
