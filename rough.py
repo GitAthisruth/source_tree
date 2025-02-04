@@ -211,54 +211,55 @@ from new_pak import gsjjs,sample_pak
 
 '''output'''
 
-dependency = {"file_name":"main","dep":["math","search","math_op","main_sub","file_1","file_2"],
-            "file_name":"maths","dep":["search","file1","file2","main_sub","math_op"],
-            "file_name":"search","dep":[],
-            "file_name":"file1","dep":["file2"],
-            "file_name":"file2","dep":[],
-            "file_name":"main_sub","dep":[],
-            "file_name":"math_op","dep":[]}
+# dependency = {"file_name":"main","dep":["math","search","math_op","main_sub","file_1","file_2"],
+#             "file_name":"maths","dep":["search","file1","file2","main_sub","math_op"],
+#             "file_name":"search","dep":[],
+#             "file_name":"file1","dep":["file2"],
+#             "file_name":"file2","dep":[],
+#             "file_name":"main_sub","dep":[],
+#             "file_name":"math_op","dep":[]}
 
-'''input'''
+# '''input'''
 
-new = {"file_name":[],"dep":[]}
+# new = {"file_name":[],"dep":[]}
 
-content_val = [{"file_name":"main.py","imp":["os"]},
-       {"file_name":"math.py","imp":['main','pandas','sub_folder']},
-       {"file_name":"search.py","imp":['by', 'os', 'json', 're', 'glob', 'math', 're']},
-       {"file_name":"file1.py","imp":['math', 'main']},
-       {"file_name":"file2.py","imp":['file1']},
-       {"file_name":"main_sub.py","imp":['math']},
-       {"file_name":"math_op.py","imp":['math']}]
+# content_val = [{"file_name":"main.py","imp":["os"]},
+#        {"file_name":"math.py","imp":['main','pandas','sub_folder']},
+#        {"file_name":"search.py","imp":['by', 'os', 'json', 're', 'glob', 'math', 're']},
+#        {"file_name":"file1.py","imp":['math', 'main']},
+#        {"file_name":"file2.py","imp":['file1']},
+#        {"file_name":"main_sub.py","imp":['math']},
+#        {"file_name":"math_op.py","imp":['math']}]
 
-val = "shhs.py"
+# val = "shhs.py"
 
-print("new value ",val.split(".")[0])
+# print("new value ",val.split(".")[0])
 
-def dep_search(file_to_check,content_val):
-    imp_list = []
-    len_con = len(content_val)
-    # print(f"len: {len_con}")
-    for i in content_val:
-        # count+=1
-        # print(i["file_name"],i["imp"])
-        if file_to_check in i["imp"] and i["file_name"] not in imp_list:
-            imp_list.append(i["file_name"])
-            print(f"import _ file {imp_list}")
+# def dep_search(file_to_check,content_val):
+#     imp_list = []
+#     len_con = len(content_val)
+#     # print(f"len: {len_con}")
+#     for i in content_val:
+#         # count+=1
+#         # print(i["file_name"],i["imp"])
+#         if file_to_check in i["imp"] and i["file_name"] not in imp_list:
+#             imp_list.append(i["file_name"])
+#             print(f"import _ file {imp_list}")
 
-    if len(imp_list)>=len_con:
-        return f"imp val {imp_list}"
+#     if len(imp_list)>=len_con:
+#         return f"imp val {imp_list}"
 
-    if imp_list:
-        for i in imp_list:
-            # print(f"i in imp2 {i}")
-            imp_list.extend(dep_search(i,content_val))
+#     if imp_list:
+#         for i in imp_list:
+#             # print(f"i in imp2 {i}")
+#             imp_list.extend(dep_search(i,content_val))
 
-        return set(imp_list)
-    return []
+#         return set(imp_list)
+#     return []
 
-print(dep_search("main",content_val))
-
-
+# print(dep_search("main",content_val))
 
 
+
+
+# print(set('main'*('math','file2','file1')))
