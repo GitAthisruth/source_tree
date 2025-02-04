@@ -1,6 +1,10 @@
 import re
 from . import main
 
+import numpy,pandas
+
+from new_pak import gsjjs,sample_pak
+
 # import .sub_folder.math_operation_subfolder import add
 # val = {"file":[]}
 

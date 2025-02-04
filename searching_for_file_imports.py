@@ -52,19 +52,29 @@ import re
 
 def extract_imports(content):
     try:
-        print(f"contents: {content}")
         imports = []
+        regex = r"(?:import\s+([\w,\.]+)|from\s+([.\w]+)\s+import\s+([\w,*]+))"
+        regex_relative = r"from\s+([.]+[\w]*)\s+import\s+([\w,*]+)"
         for val in content:
             if ".js" not in val:
-                regex = r"(?:import\s+([\w\.]+)|from\s+([\w\.]+)\s+import)"
-                matches = re.findall(regex,val)
+                matches = re.findall(regex, val)
+                print(f"regex match is {matches}")
                 for match in matches:
-                    module_name = match[0] or match[1]
-                    if "." in module_name:
-                        module_name = module_name.split(".")[-1]
-                        imports.append(module_name)
-                    else:
-                        imports.append(module_name)
+                    print(f"match is.......... {match}")
+                    if match[0]: 
+                        modules = [m.strip() for m in match[0].split(",")]
+                        imports.extend(modules)
+                    elif match[1]: 
+                        imports.append(match[1])
+                        if match[2]: 
+                            functions = [f.strip() for f in match[2].split(",")]
+                            imports.extend(functions)
+
+                matches_relative = re.findall(regex_relative, val)
+                if matches_relative:
+                    for match in matches_relative:
+                        modules = [m.strip() for m in match[1].split(",")]
+                        imports.extend(modules)
             else:
                 regex = r"(?:import\s+[^'\"]*['\"](?:.*/)?([\w]+)\.js['\"]|from\s+['\"](?:.*/)?([\w]+)\.js['\"])"
                 matches = re.findall(regex,val)
@@ -113,9 +123,11 @@ def get_all_file_infos(folder_path, file_to_check):
                 if file.endswith(extensions):
                     file_path = os.path.join(dirpath, file)
                     file_contents = content_reader(file_path)
-                    
+                    print(f"file_name is :{file} contents_reader: {file_contents}")
+
                     if file_contents:
                         file_imports = extract_imports(file_contents)
+                        print(f"file_name is :{file} file_imports : {file_imports}")
                         file_inform.append({"file_name":file.split(".")[0],"imp":file_imports})
         imp_list = dep_search(file_to_check,file_inform)
         graph_data = [{"file_name":file_to_check,"imp":imp_list}]
