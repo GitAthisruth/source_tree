@@ -52,6 +52,7 @@ import re
 
 def extract_imports(content):
     try:
+        print(f"contents: {content}")
         imports = []
         for val in content:
             if ".js" not in val:
