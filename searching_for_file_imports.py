@@ -58,9 +58,7 @@ def extract_imports(content):
         for val in content:
             if ".js" not in val:
                 matches = re.findall(regex, val)
-                print(f"regex match is {matches}")
                 for match in matches:
-                    print(f"match is.......... {match}")
                     if match[0]: 
                         modules = [m.strip() for m in match[0].split(",")]
                         imports.extend(modules)
@@ -123,8 +121,7 @@ def get_all_file_infos(folder_path, file_to_check):
                 if file.endswith(extensions):
                     file_path = os.path.join(dirpath, file)
                     file_contents = content_reader(file_path)
-                    print(f"file_name is :{file} contents_reader: {file_contents}")
-
+                    
                     if file_contents:
                         file_imports = extract_imports(file_contents)
                         print(f"file_name is :{file} file_imports : {file_imports}")
@@ -147,10 +144,10 @@ def get_all_file_infos(folder_path, file_to_check):
 
 
 if __name__ == "__main__":
-    # folder_path = "C:\\Users\\LENOVO\\Desktop\\python_repo_to_check\\importlab"
+    folder_path = "C:\\Users\\LENOVO\\Desktop\\python_repo_to_check\\importlab"
     # folder_path =  "C:\\Users\\LENOVO\\Desktop\\python_/repo_to_check\\Qwen"
     # folder_path = "C:\\Users\\LENOVO\\Desktop\\flask_demo_project_case_management\\Frontend\\project-management"  
-    folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree"
+    # folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree"
     # folder_path = "C:\\Users\LENOVO\\Desktop\\python_repo_to_check\\Advanced-Artificial-Intelligence-Projects-with-Python" 
     file_to_check = input("Enter the file name(.js/.py) without the extension to check: ")
     # folder_path = os.path.normpath(folder_path)
