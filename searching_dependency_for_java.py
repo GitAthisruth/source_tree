@@ -8,25 +8,20 @@ from glob import glob
 import pandas as pd
 
 
-def build_dependency_graph(graph_inform):
-    Graph = nx.DiGraph()
 
-    for file_info in graph_inform:
-        file_name = file_info['file_name']
-        Graph.add_node(file_name)
-        
-        for imp in file_info['imp']:
-            Graph.add_edge(file_name, imp)
+def draw_tree(file_to_check,tupled_dependency):
+    G = nx.DiGraph()
+    G.add_node(file_to_check)
+    G.add_edges_from(tupled_dependency)
 
-    return Graph
-
-
-def draw_dependency_graph(Graph,file_to_check):
     plt.figure(figsize=(10, 8))
-    pos = nx.spring_layout(Graph, seed=42)
-    nx.draw(Graph, pos, with_labels=True, node_color="lightblue", edge_color="gray", node_size=1000, font_size=10)
-    plt.savefig(f"{file_to_check}.png")
+    pos = nx.spring_layout(G,k=1,seed=3)
+    nx.draw(G, pos, with_labels=True, node_size=1000, node_color='violet', font_size=6, font_weight=None, arrows=True,width=0.3)
+    plt.title("File Dependency Tree Structure")
+    plt.savefig(f"{file_to_check}py_file_tree", format="png")
     plt.show()
+
+
 
 def content_reader(file_path):
     try:
@@ -58,31 +53,38 @@ def extract_imports(content):
     
 
 
-def dep_search(file_to_check, files_inform, folder_inform,seen=None):
+def dep_search(file_to_check, files_inform, folder_inform,visited=None,tupled_dependencies=None):
     dependencies = set()
-    seen = set()
-    seen_rec = set()
+    if visited is None:
+        visited = set()
     parent_folder = None
+    if tupled_dependencies is None:
+        tupled_dependencies = []
+    visited.add(file_to_check)
     for folder in folder_inform:
         if folder['folder_files'] == file_to_check:
-            parent_folder = folder['folder_name']
+            parent_folder = folder['folder_name']#if there is any folder name there.
             break 
+
     for file_info in files_inform:
-        if file_to_check in file_info['imp'] and file_info['file_name'] not in seen:
+        if file_to_check in file_info['imp']:
             dependencies.add(file_info['file_name'])  # Direct dependency
     
-    for imp_file in list(dependencies):
-        if imp_file not in seen_rec:
-            seen_rec.add(imp_file)
-            dependencies.update(dep_search(imp_file,files_inform, seen))
-
     if parent_folder:
         for file_info in files_inform:
             if parent_folder in file_info['imp']:
                 dependencies.add(file_info['file_name'])  
 
-
-    return list(dependencies)
+    for imp_file in list(dependencies):
+        if imp_file not in visited:
+            new_dependencies, new_tupled_dependencies = dep_search(imp_file, files_inform,folder_inform,visited, tupled_dependencies)
+            dependencies.update(new_dependencies)#here we updating the dependencies only. 
+    result = [(file_to_check, item) for item in dependencies]#creating a list of tuple
+    tupled_dependencies.extend(result)
+    print(tupled_dependencies)
+ 
+    
+    return list(dependencies),tupled_dependencies
 
 
 
@@ -111,11 +113,10 @@ def dep_check_for_java(folder_path,file_to_check):
                         folder_inform.append({"folder_name":package_name,"folder_files":file.split(".")[0]})
                     else:    
                         file_inform.append({"file_name":file.split(".")[0],"imp":file_imports})
-    imp_list = dep_search(file_to_check,file_inform,folder_inform)
-    if imp_list:
-        graph_data = [{"file_name":file_to_check,"imp":imp_list}]
-        build_graph =  build_dependency_graph(graph_data)
-        graph = draw_dependency_graph(build_graph,file_to_check)
+    result = dep_search(file_to_check,file_inform,folder_inform)
+    imp_list = result[0]
+    tupled_dep = result[1]
+    draw_tree(file_to_check,tupled_dep)
     imp_list_json = json.dumps({"file": file_to_check, "dependencies": imp_list}, indent=4)
     with open(f"{file_to_check}_dependencies.json", "w") as outfile:
         outfile.write(imp_list_json)

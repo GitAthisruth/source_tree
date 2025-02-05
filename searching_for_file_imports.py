@@ -88,7 +88,6 @@ def dep_search(file_to_check, files_inform,visited=None,tupled_dependencies=None
         file_to_check = file_to_check.replace(".py","")
         if file_to_check in file_info['imp']:
             dependencies.add(file_info['file_name'])  # Direct dependency
-    
     result = [(file_to_check, item) for item in dependencies]#creating a list of tuple
     tupled_dependencies.extend(result)
     
@@ -120,7 +119,6 @@ def get_all_file_infos(folder_path, file_to_check):
                 if file.endswith(extensions):
                     file_path = os.path.join(dirpath, file)
                     file_contents = content_reader(file_path)
-                    print(f"file_name:{file} and file_contents: {file_contents}")
                     if file_contents:
                         file_imports = extract_imports(file_contents)
                         file_inform.append({"file_name":file.split(".")[0],"imp":file_imports})
