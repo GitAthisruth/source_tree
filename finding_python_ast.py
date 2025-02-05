@@ -13,10 +13,6 @@ logging.basicConfig(
     )
 
 
-# print(f"Named tuple of Import: {Import}")
-# file_path = "C:\\Users\\LENOVO\Desktop\\prizmora\\source_tree\\rough.py"
-
-
 def draw_tree(file_to_check,tupled_dependency):
     G = nx.DiGraph()
     G.add_node(file_to_check)
@@ -37,7 +33,6 @@ def draw_tree(file_to_check,tupled_dependency):
 
 def get_imports(all_file_path):
     print(f"all file paths: {all_file_path}")
-    imports = []
     file_name_imports = []
     for file_path in all_file_path:
         with open(file_path, "r", encoding="utf-8") as file:
@@ -48,21 +43,13 @@ def get_imports(all_file_path):
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
-                    imports.append(("import", alias.name, alias.asname))#import pandas as pd
+                    # imports.append(("import", alias.name, alias.asname))#import pandas as pd
                     file_name_imports.append({"file_name":file_name_,"imports":[alias.name]})
             elif isinstance(node, ast.ImportFrom):#from numpy import array as arr
                 for alias in node.names:
-                    imports.append(("from", node.module, alias.name, alias.asname))
+                    # imports.append(("from", node.module, alias.name, alias.asname))
                     file_name_imports.append({"file_name":file_name_,"imports":[node.module,alias.name]})
-        
-    # print(f"file_name_imports: {file_name_imports}")
-
-    return imports,file_name_imports
-
-# imports,file_name_imports = get_imports(file_path)
-
-# print(file_name_imports)
-
+    return file_name_imports
 
 
 
@@ -93,13 +80,9 @@ def dep_search(file_to_check, files_inform,visited=None,tupled_dependencies=None
 
 
 
-folder_path = path = "C:\\Users\\LENOVO\Desktop\\prizmora\\source_tree"
-file_to_check = input(f"Give a valid file_name: ")
-# finding path to the files in a directory.
-# 
+ 
 def dependency_check(folder_path,file_to_check): 
     all_file_path = []
-    dependent_file = []
     all_files = []
     for (dirpath,dirnames, filenames) in os.walk(folder_path):
                 for file in filenames:
@@ -113,7 +96,7 @@ def dependency_check(folder_path,file_to_check):
                         all_file_path.append(file_path)
     logging.info(f"file path appended successfully")
     logging.info(f"result is :{all_file_path}")
-    imports,file_name_imports = get_imports(all_file_path)
+    file_name_imports = get_imports(all_file_path)
     print(f"file_name_imports:{file_name_imports}")
     result =  dep_search(file_to_check,file_name_imports)
     imp_list = result[0]
@@ -125,22 +108,13 @@ def dependency_check(folder_path,file_to_check):
     with open(f'{file_to_check}_txt_file_info.txt', 'w') as file:
         file.write(imp_list_json)
 
-        return imp_list_json
-  
-    #finding direct dependant files.
-    # logging.info(f"started to run dep_search function....")
-    # direct_dependent = dep_search(all_file_path,file_to_check)
-    # print(f"direct_dependent: {direct_dependent}")
-    # logging.info(f"direct dependant files are: {direct_dependent}")
-    
-    
-
-
-    # print(direct_dependant)
-
-    return dependent_file
-
-print(dependency_check(folder_path,file_to_check))
+    return imp_list_json
 
 
 
+if __name__ == "__main__":
+    folder_path =  "C:\\Users\\LENOVO\\Desktop\\javaProdemo"
+    folder_path = path = "C:\\Users\\LENOVO\Desktop\\prizmora\\source_tree"
+    file_to_check = input(f"Give a valid file_name(.py): ")
+    file_info = dependency_check(folder_path,file_to_check)
+    print(file_info)
