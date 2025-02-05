@@ -1,7 +1,9 @@
 import ast
-from collections import namedtuple
 import os
 import logging
+import networkx as nx
+import matplotlib.pyplot as plt
+import json
 
 logging.basicConfig(
         level=logging.INFO,
@@ -11,62 +13,83 @@ logging.basicConfig(
     )
 
 
-Import = namedtuple("Import", ["module", "name", "alias"])
-
 # print(f"Named tuple of Import: {Import}")
-# path = "C:\\Users\\LENOVO\Desktop\\prizmora\\source_tree\\visualising_ast\\file1.py"
-
-def get_imports(path):
-    with open(path) as fh:        
-       root = ast.parse(fh.read(), path)
-    for node in ast.iter_child_nodes(root):
-        if isinstance(node, ast.Import):
-            module = []
-        elif isinstance(node, ast.ImportFrom):  
-            module = node.module.split('.')
-        else:
-            continue
-
-        for n in node.names:
-            yield Import(module, n.name.split('.'), n.asname)
+# file_path = "C:\\Users\\LENOVO\Desktop\\prizmora\\source_tree\\rough.py"
 
 
-# print(list(get_imports(path)))
+def draw_tree(file_to_check,tupled_dependency):
+    G = nx.DiGraph()
+    G.add_node(file_to_check)
+    G.add_edges_from(tupled_dependency)
+
+    plt.figure(figsize=(10, 8))
+    pos = nx.spring_layout(G,k=1,seed=3)
+    nx.draw(G, pos, with_labels=True, node_size=1000, node_color='violet', font_size=6, font_weight=None, arrows=True,width=0.3)
+    plt.title("File Dependency Tree Structure")
+    plt.savefig(f"{file_to_check}py_file_tree", format="png")
+    plt.show()
 
 
 
-def dep_search(all_file_path,file_to_check):
-    direct_dependant = []
-    indirect_dependant = []
+
+
+
+
+def get_imports(all_file_path):
+    print(f"all file paths: {all_file_path}")
+    imports = []
+    file_name_imports = []
     for file_path in all_file_path:
-        file_name = os.path.basename(file_path)
-        for import_values in get_imports(file_path):
-            module = import_values.module
-            name = import_values.name
-            alias = import_values.alias
-            logging.info(f"file : {file_name} get_import function successfully run and the result is: Module: {module}, Name: {name}, Alias: {alias}")
-            #finding direct dependant files.
-            if name[0] == file_to_check and file_name not in direct_dependant:
-                logging.info(f"started to finding direct dependant files of the file to check and appending it to a list direct_dependent")
-                direct_dependant.append(file_name)
-                logging.info(f"file:{file_name} and module_name {name}")
+        with open(file_path, "r", encoding="utf-8") as file:
+            tree = ast.parse(file.read(), file_path)
+        file_name_= os.path.basename(file_path)
+        file_name_ = file_name_.replace(".py","")
+        
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    imports.append(("import", alias.name, alias.asname))#import pandas as pd
+                    file_name_imports.append({"file_name":file_name_,"imports":[alias.name]})
+            elif isinstance(node, ast.ImportFrom):#from numpy import array as arr
+                for alias in node.names:
+                    imports.append(("from", node.module, alias.name, alias.asname))
+                    file_name_imports.append({"file_name":file_name_,"imports":[node.module,alias.name]})
+        
+    # print(f"file_name_imports: {file_name_imports}")
 
-        #searching for indirect dependency
-        # logging.info(f"started to check for indirect dependency of file")
+    return imports,file_name_imports
 
-        # for file_name in direct_dependant:
-        #     if file_path.endswith(file_name) and file_name not in indirect_dependant:
-        #         logging.info(f"file paths for searching indirect dependant is added: file paths are {file_path}" )
-        #         dependency_check               
+# imports,file_name_imports = get_imports(file_path)
 
-
-
-
-
+# print(file_name_imports)
 
 
 
 
+
+
+
+def dep_search(file_to_check, files_inform,visited=None,tupled_dependencies=None):
+    if visited is None:
+        visited = set()
+    dependencies = set()
+    if tupled_dependencies is None:
+        tupled_dependencies = []
+    visited.add(file_to_check)
+    for file_info in files_inform:
+        file_to_check = file_to_check.replace(".py","")
+        if file_to_check in file_info['imports']:
+            dependencies.add(file_info['file_name'])  # Direct dependency
+    result = [(file_to_check, item) for item in dependencies]#creating a list of tuple
+    tupled_dependencies.extend(result)
+    
+    # Indirect dependency  
+    for imp_file in list(dependencies):
+        if imp_file not in visited:
+            new_dependencies, new_tupled_dependencies = dep_search(imp_file, files_inform, visited, tupled_dependencies)
+            dependencies.update(new_dependencies)#here we updating the dependencies only. 
+
+    return list(dependencies),tupled_dependencies
 
 
 
@@ -88,14 +111,27 @@ def dependency_check(folder_path,file_to_check):
                         logging.info(f"get_imports function going to run")
                         logging.info(f"file path are going to append: {file_path}")
                         all_file_path.append(file_path)
-                        logging.info(f"file path appended successfully")
-                        logging.info(f"result is :{all_file_path}")
+    logging.info(f"file path appended successfully")
+    logging.info(f"result is :{all_file_path}")
+    imports,file_name_imports = get_imports(all_file_path)
+    print(f"file_name_imports:{file_name_imports}")
+    result =  dep_search(file_to_check,file_name_imports)
+    imp_list = result[0]
+    tupled_dep = result[1]
+    draw_tree(file_to_check,tupled_dep)
+    imp_list_json = json.dumps({"file": file_to_check, "dependencies": imp_list}, indent=4)
+    with open(f"{file_to_check}_dependencies.json", "w") as outfile:
+        outfile.write(imp_list_json)
+    with open(f'{file_to_check}_txt_file_info.txt', 'w') as file:
+        file.write(imp_list_json)
 
+        return imp_list_json
   
     #finding direct dependant files.
-    logging.info(f"started to run dep_search function....")
-    direct_dependent = dep_search(all_file_path,file_to_check)
-    logging.info(f"direct dependant files are: {direct_dependent}")
+    # logging.info(f"started to run dep_search function....")
+    # direct_dependent = dep_search(all_file_path,file_to_check)
+    # print(f"direct_dependent: {direct_dependent}")
+    # logging.info(f"direct dependant files are: {direct_dependent}")
     
     
 
