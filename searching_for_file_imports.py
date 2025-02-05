@@ -44,10 +44,10 @@ import re
 def extract_imports(content):
     try:
         imports = []
-        regex = r"(?:import\s+([\w,\.]+)|from\s+([.\w]+)\s+import\s+([\w,*]+))"
-        regex_relative = r"from\s+([.]+[\w]*)\s+import\s+([\w,*]+)"
         for val in content:
             if ".js" not in val:
+                regex = r"(?:import\s+([\w,\.]+)|from\s+([.\w]+)\s+import\s+([\w,*]+))"
+                regex_relative = r"from\s+([.]+[\w]*)\s+import\s+([\w,*]+)"
                 matches = re.findall(regex, val)
                 for match in matches:
                     if match[0]: 
