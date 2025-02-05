@@ -19,10 +19,10 @@ def draw_tree(file_to_check,tupled_dependency):
     G.add_node(file_to_check)
     G.add_edges_from(tupled_dependency)
 
-    plt.figure(figsize=(8, 6))
-    pos = nx.spring_layout(G, k=0.5, iterations=50)
-    nx.draw(G, pos, with_labels=True, node_size=2000, node_color='lightgreen', font_size=12, font_weight='bold', arrows=True)
-    plt.title("Simple Tree Structure")
+    plt.figure(figsize=(10, 8))
+    pos = nx.spring_layout(G,k=1,seed=3)
+    nx.draw(G, pos, with_labels=True, node_size=1000, node_color='violet', font_size=6, font_weight=None, arrows=True,width=0.3)
+    plt.title("File Dependency Tree Structure")
     plt.savefig(f"{file_to_check}py_file_tree", format="png")
     plt.show()
 
@@ -92,7 +92,6 @@ def dep_search(file_to_check, files_inform,visited=None,tupled_dependencies=None
     result = [(file_to_check, item) for item in dependencies]#creating a list of tuple
     tupled_dependencies.extend(result)
     
-    # print(tupled_dependencies)
     # Indirect dependency  
     for imp_file in list(dependencies):
         if imp_file not in visited:
@@ -121,7 +120,7 @@ def get_all_file_infos(folder_path, file_to_check):
                 if file.endswith(extensions):
                     file_path = os.path.join(dirpath, file)
                     file_contents = content_reader(file_path)
-
+                    print(f"file_name:{file} and file_contents: {file_contents}")
                     if file_contents:
                         file_imports = extract_imports(file_contents)
                         file_inform.append({"file_name":file.split(".")[0],"imp":file_imports})
@@ -143,10 +142,10 @@ def get_all_file_infos(folder_path, file_to_check):
 
 
 if __name__ == "__main__":
-    # folder_path = "C:\\Users\\LENOVO\\Desktop\\python_repo_to_check\\importlab"
+    folder_path = "C:\\Users\\LENOVO\\Desktop\\python_repo_to_check\\importlab"
     # folder_path =  "C:\\Users\\LENOVO\\Desktop\\python_/repo_to_check\\Qwen"
     # folder_path = "C:\\Users\\LENOVO\\Desktop\\flask_demo_project_case_management\\Frontend\\project-management"  
-    folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree"
+    # folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree"
     # folder_path = "C:\\Users\LENOVO\\Desktop\\python_repo_to_check\\Advanced-Artificial-Intelligence-Projects-with-Python" 
     file_to_check = input("Enter the file name(.js/.py) without the extension to check: ")
     # folder_path = os.path.normpath(folder_path)
