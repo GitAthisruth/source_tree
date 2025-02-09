@@ -26,32 +26,6 @@ def draw_tree(file_to_check,tupled_dependency):
     plt.show()
 
 
-
-def get_imports(all_file_path):
-    # print(f"all file paths: {all_file_path}")
-    file_name_imports = []
-    for file_path in all_file_path:
-        with open(file_path, "r", encoding="utf-8") as file:
-            tree = ast.parse(file.read(), file_path)
-        file_name_= os.path.basename(file_path)
-        file_name_ = file_name_.replace(".py","")
-        
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                for alias in node.names:
-                    # imports.append(("import", alias.name, alias.asname))#import pandas as pd
-                    file_name_imports.append({"file_name":file_name_,"imports":[alias.name]})
-            elif isinstance(node, ast.ImportFrom):#from numpy import array as arr
-                for alias in node.names:
-                    # imports.append(("from", node.module, alias.name, alias.asname))
-                    file_name_imports.append({"file_name":file_name_,"imports":[node.module,alias.name]})
-    return file_name_imports
-
-
-
-
-
-
 def dep_search(file_to_check, files_inform,visited=None,tupled_dependencies=None):
     if visited is None:
         visited = set()
@@ -60,7 +34,7 @@ def dep_search(file_to_check, files_inform,visited=None,tupled_dependencies=None
         tupled_dependencies = []
     visited.add(file_to_check)
     for file_info in files_inform:
-        file_to_check = file_to_check.replace(".py","")
+        file_to_check = file_to_check.replace(".js","")
         if file_to_check in file_info['imports']:
             dependencies.add(file_info['file_name'])  # Direct dependency
     result = [(file_to_check, item) for item in dependencies]#creating a list of tuple
@@ -76,13 +50,14 @@ def dep_search(file_to_check, files_inform,visited=None,tupled_dependencies=None
 
 
 
- 
-def dependency_check(folder_path,file_to_check): 
+
+
+def dependency_check(folder_path,file_to_check,file_inform): 
     all_file_path = []
     all_files = []
     for (dirpath,dirnames, filenames) in os.walk(folder_path):
                 for file in filenames:
-                    if file.endswith(".py"):
+                    if file.endswith(".js"):
                         all_files.append(file)  
                         logging.info(f"all python files are appended to the list all_files.")
                         file_path = os.path.join(dirpath, file)
@@ -92,8 +67,9 @@ def dependency_check(folder_path,file_to_check):
                         all_file_path.append(file_path)
     logging.info(f"file path appended successfully")
     logging.info(f"result is :{all_file_path}")
-    file_name_imports = get_imports(all_file_path)
-    # print(f"file_name_imports:{file_name_imports}")
+    with open(file_inform, "r") as file:
+        file_name_imports = json.load(file)
+    print(f"file_name_imports:{file_name_imports}")
     result =  dep_search(file_to_check,file_name_imports)
     imp_list = result[0]
     tupled_dep = result[1]
@@ -101,16 +77,16 @@ def dependency_check(folder_path,file_to_check):
     imp_list_json = json.dumps({"file": file_to_check, "dependencies": imp_list}, indent=4)
     with open(f"{file_to_check}_dependencies.json", "w") as outfile:
         outfile.write(imp_list_json)
-    # with open(f'{file_to_check}_txt_file_info.txt', 'w') as file:
-    #     file.write(imp_list_json)
+    with open(f'{file_to_check}_txt_file_info.txt', 'w') as file:
+        file.write(imp_list_json)
 
     return imp_list_json
 
 
 
 if __name__ == "__main__":
-    folder_path =  "C:\\Users\\LENOVO\\Desktop\\javaProdemo"
-    folder_path = path = "C:\\Users\\LENOVO\Desktop\\prizmora\\source_tree"
-    file_to_check = input(f"Give a valid file_name(.py): ")
-    file_info = dependency_check(folder_path,file_to_check)
+    folder_path = path = "C:\\Users\\LENOVO\\Desktop\\JSAPP\\dep_for_java_script\\test"
+    file_to_check = input(f"Give a valid file_name(.js): ")
+    file_inform = "C:\\Users\\LENOVO\\Desktop\prizmora\\source_tree\\finding_ast_for_javascript\\import_file.json"
+    file_info = dependency_check(folder_path,file_to_check,file_inform)
     print(file_info)
