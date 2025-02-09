@@ -1,7 +1,0 @@
-{
-    "file": "MyClass",
-    "dependencies": [
-        "App",
-        "filej"
-    ]
-}

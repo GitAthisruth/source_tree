@@ -32,7 +32,7 @@ def draw_tree(file_to_check,tupled_dependency):
 
 
 def get_imports(all_file_path):
-    print(f"all file paths: {all_file_path}")
+    # print(f"all file paths: {all_file_path}")
     file_name_imports = []
     for file_path in all_file_path:
         with open(file_path, "r", encoding="utf-8") as file:
@@ -75,7 +75,7 @@ def dep_search(file_to_check, files_inform,visited=None,tupled_dependencies=None
         if imp_file not in visited:
             new_dependencies, new_tupled_dependencies = dep_search(imp_file, files_inform, visited, tupled_dependencies)
             dependencies.update(new_dependencies)#here we updating the dependencies only. 
-
+    # print(f"tupled dependencies: {tupled_dependencies}")
     return list(dependencies),tupled_dependencies
 
 
@@ -97,7 +97,7 @@ def dependency_check(folder_path,file_to_check):
     logging.info(f"file path appended successfully")
     logging.info(f"result is :{all_file_path}")
     file_name_imports = get_imports(all_file_path)
-    print(f"file_name_imports:{file_name_imports}")
+    # print(f"file_name_imports:{file_name_imports}")
     result =  dep_search(file_to_check,file_name_imports)
     imp_list = result[0]
     tupled_dep = result[1]
