@@ -2,7 +2,7 @@ import os
 
 import json
 
-folderPath = "C:\\Users\\LENOVO\\Desktop\\JSAPP\\dep_for_java_script\\test"
+folderPath = "C:\\Users\\LENOVO\Desktop\js_repo_check\\monaco-editor"
 
 def dependency_check(folderpath): 
     all_file_path = []

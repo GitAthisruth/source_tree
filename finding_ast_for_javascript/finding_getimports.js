@@ -29,6 +29,10 @@ export function getImports(rawData) {
                         importName = importName.slice(0, -3);
                     }
 
+                    if (importName.includes("/")) {
+                        importName = importName.split("/").pop();
+                    }
+
                     return importName;
                 });
 

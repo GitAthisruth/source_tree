@@ -85,7 +85,7 @@ def dependency_check(folder_path,file_to_check,file_inform):
 
 
 if __name__ == "__main__":
-    folder_path = path = "C:\\Users\\LENOVO\\Desktop\\JSAPP\\dep_for_java_script\\test"
+    folder_path = path = "C:\\Users\\LENOVO\Desktop\js_repo_check\\monaco-editor"
     file_to_check = input(f"Give a valid file_name(.js): ")
     file_inform = "C:\\Users\\LENOVO\\Desktop\prizmora\\source_tree\\finding_ast_for_javascript\\import_file.json"
     file_info = dependency_check(folder_path,file_to_check,file_inform)

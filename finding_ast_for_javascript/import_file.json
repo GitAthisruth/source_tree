@@ -1,0 +1,69 @@
+[
+    {
+        "file_name": "index",
+        "imports": [
+            "editor.main"
+        ]
+    },
+    {
+        "file_name": "index",
+        "imports": [
+            "json.worker",
+            "css.worker",
+            "html.worker",
+            "ts.worker",
+            "editor.worker",
+            "editor.main"
+        ]
+    },
+    {
+        "file_name": "index",
+        "imports": [
+            "monaco-editor"
+        ]
+    },
+    {
+        "file_name": "index",
+        "imports": [
+            "editor.api"
+        ]
+    },
+    {
+        "file_name": "index",
+        "imports": [
+            "coreCommands",
+            "findController",
+            "editor.api",
+            "python.contribution"
+        ]
+    },
+    {
+        "file_name": "index",
+        "imports": [
+            "monaco-editor"
+        ]
+    },
+    {
+        "file_name": "index",
+        "imports": [
+            "editor.main"
+        ]
+    },
+    {
+        "file_name": "index",
+        "imports": [
+            "editor.main",
+            "editor.worker?worker",
+            "json.worker?worker",
+            "css.worker?worker",
+            "html.worker?worker",
+            "ts.worker?worker"
+        ]
+    },
+    {
+        "file_name": "index",
+        "imports": [
+            "editor.api"
+        ]
+    }
+]

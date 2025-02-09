@@ -140,7 +140,8 @@ def get_all_file_infos(folder_path, file_to_check):
 
 
 if __name__ == "__main__":
-    folder_path = "C:\\Users\\LENOVO\\Desktop\\python_repo_to_check\\importlab"
+    # folder_path = "C:\\Users\\LENOVO\\Desktop\\python_repo_to_check\\importlab"
+    folder_path = "C:\\Users\\LENOVO\Desktop\js_repo_check\\monaco-editor"
     # folder_path =  "C:\\Users\\LENOVO\\Desktop\\python_/repo_to_check\\Qwen"
     # folder_path = "C:\\Users\\LENOVO\\Desktop\\flask_demo_project_case_management\\Frontend\\project-management"  
     # folder_path =  "C:\\Users\\LENOVO\\Desktop\\prizmora\\source_tree"
